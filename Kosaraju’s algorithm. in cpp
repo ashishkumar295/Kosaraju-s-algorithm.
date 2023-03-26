@@ -1,0 +1,47 @@
+void topologicalSort(int i, vector<vector<int>>& adj, vector<int> &vis, stack<int> &st)
+    {
+	    vis[i]=1;
+	    for(auto x: adj[i])
+	        if(vis[x]==0)
+	            topologicalSort(x,adj,vis,st);
+	    st.push(i);
+	}
+
+	void dfs(int i, vector<int> adj[], vector<int> &vis, vector<int> &ans)
+    {
+	    vis[i]=1;
+        ans.push_back(i);
+	    for(auto x: adj[i])
+	        if(vis[x]==0)
+	            dfs(x, adj, vis, ans);
+	}
+
+    int kosaraju(int n, vector<vector<int>>& adj) 
+    {
+        int ans=0;
+        stack<int> st;
+        vector<int> vis(n, 0);
+        for(int i=0;i<n;i++) {
+            if(vis[i]==0) {
+                topologicalSort(i, adj, vis, st);
+            }
+        }
+        vector<int> adjRev[n];
+        for(int i=0;i<n;i++) {
+            vis[i]=0;
+            for(auto x: adj[i]) {
+                adjRev[x].push_back(i);
+            }
+        }
+        while(st.size()) {
+            int node=st.top(); 
+            st.pop();
+            if(vis[node]==0) {
+                vector<int> temp;
+                dfs(node, adjRev, vis, temp);           
+                if(ans<temp.size()) 
+                    ans=temp.size();
+            }
+        }
+        return ans;
+    }
